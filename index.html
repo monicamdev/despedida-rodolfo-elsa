@@ -816,8 +816,6 @@
 <script>
   /* ─── CREDENCIALES ─── */
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbybZABj7fxWpSMtiltnhm954EOggjHFxbhK6bo02igDnRweVk7ei8Xkjv0dYxT-Z8VQ1w/exec'; 
-  const TELEGRAM_TOKEN = '8734607791:AAGOEOqrYHedzAtnnhV2tfTm_WZV12YcIMw';
-  const TELEGRAM_CHAT_ID = '7461517847';
 
   let attendees = JSON.parse(localStorage.getItem('despedida_rodolfo_elsa') || '[]');
 
@@ -919,19 +917,12 @@
         }).catch(err => console.log('Google Script background sent.'));
       }
 
-      // 2. Telegram Webhook
-      if (TELEGRAM_TOKEN && TELEGRAM_CHAT_ID) {
-        const textMsg = `🪩 Nuevo Confirmado!\n\n👤 Nombre: \${name}\n📞 Whats: \${phone || 'N/A'}\n🤝 Acompañante: \${guests === '1' ? companionName : 'Ninguno'}\n💬 Mensaje: \${message || 'N/A'}`;
-        const tgUrl = `https://api.telegram.org/bot\${TELEGRAM_TOKEN}/sendMessage`;
-        const tgParams = new URLSearchParams();
-        tgParams.append('chat_id', TELEGRAM_CHAT_ID);
-        tgParams.append('text', textMsg);
-
-        fetch(tgUrl, {
-          method: 'POST',
-          body: tgParams
-        }).catch(err => console.log('Telegram message error logged'));
-      }
+      // 2. Telegram Webhook (via Vercel Backend)
+      fetch('/api/telegram', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, phone, guests, companionName, message })
+      }).catch(err => console.log('Telegram backend falló o remoto inactivo'));
     } catch(e) { console.error('Error enviando notificaciones', e); }
     
     // Almacenamos localmente para evitar registro múltiple
