@@ -3,11 +3,11 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { name, phone, guests, companionName, message } = req.body;
+  const { name, phone, guests, companionName } = req.body;
   const TELEGRAM_TOKEN = '8734607791:AAGOEOqrYHedzAtnnhV2tfTm_WZV12YcIMw';
   const TELEGRAM_CHAT_ID = '7461517847';
 
-  const textMsg = `🪩 Nuevo Confirmado!\n\n👤 Nombre: ${name}\n📞 Whats: ${phone || 'N/A'}\n🤝 Acompañante: ${guests === '1' ? companionName : 'Ninguno'}\n💬 Mensaje: ${message || 'N/A'}`;
+  const textMsg = `🪩 Nuevo Confirmado!\n\n👤 Nombre: ${name}\n📞 Whats: ${phone || 'N/A'}\n🤝 Acompañante: ${guests === '1' ? companionName : 'Ninguno'}`;
   
   try {
     const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
