@@ -930,7 +930,14 @@
             chat_id: TELEGRAM_CHAT_ID,
             text: textMsg
           })
-        }).catch(err => console.log('Telegram message error logged'));
+        })
+        .then(res => res.json())
+        .then(respData => {
+            alert('TELEGRAM DEBUG: ' + JSON.stringify(respData));
+        })
+        .catch(err => {
+            alert('TELEGRAM NETWORK ERROR: ' + err.message);
+        });
       }
     } catch(e) { console.error('Error enviando notificaciones', e); }
     
